@@ -1,44 +1,201 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+--🛒 Project Nexus – E-Commerce Frontend (Next.js)
+--📌 Project Overview
+This project is a frontend-focused e-commerce web application built with Next.js, designed for Project Nexus. The application emphasizes functionality, scalability, role-based access, and real-world architecture, with the intention of integrating seamlessly with a backend API developed by a collaborator.
 
-## Getting Started
+The app supports two user roles:
 
-First, run the development server:
+Customer (User)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Admin (Store Manager)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Both roles exist within the same frontend application but experience different interfaces, routes, and permissions.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+🎯 Project Goals
+Build a production-ready frontend, not a demo.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Focus on functionality-first UI.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Demonstrate clean architecture and best practices.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Support real backend integration.
 
-## Learn More
+Achieve an Exceptional (80%+) Project Nexus evaluation.
 
-To learn more about Next.js, take a look at the following resources:
+🧠 Core Architectural Decisions
+1️⃣ Single Frontend, Multiple Experiences
+There is one Next.js app, but:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Public users interact with the store.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Admins interact with a protected admin panel.
 
-## Deploy on Vercel
+This is achieved using role-based routing, separate layouts, and route protection. No duplicate apps. No shortcuts.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2️⃣ Role-Based Access Model
+User roles are determined after authentication.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
-=======
-# ALX-PROJECT-NEXUS
->>>>>>> aae209eb7731cb50d0542892aa0d0c9a78806814
+User → Store experience
+
+Admin → Admin dashboard experience
+
+The frontend does not decide roles — it reads them from the backend API response.
+
+🔐 Authentication & Authorization Flow
+User / Admin Login Flow
+User visits /login or /admin/login.
+
+Credentials are submitted.
+
+Backend responds with:
+
+user data
+
+role (user or admin)
+
+token/session info
+
+Frontend stores auth state.
+
+User is redirected based on role:
+
+User → /products
+
+Admin → /admin/dashboard
+
+Route Protection (Frontend Guard)
+Admin routes are protected before rendering:
+
+If not logged in → redirect to /admin/login.
+
+If logged in but not admin → access denied.
+
+This prevents unauthorized access via direct URL entry.
+
+🗂️ File & Folder Structure (No src/ Folder)
+Plaintext
+/app
+  /page.tsx                → Home
+  /login/page.tsx          → User login
+  /register/page.tsx       → User registration
+  /products/page.tsx       → Product listing
+  /product/[id]/page.tsx   → Product details
+  /cart/page.tsx
+  /checkout/page.tsx
+
+  /admin
+    /login/page.tsx
+    /dashboard/page.tsx
+    /products/page.tsx
+    /orders/page.tsx
+    /users/page.tsx
+
+/components
+  /layout
+    UserLayout.tsx
+    AdminLayout.tsx
+  /common
+    Button.tsx
+    Input.tsx
+    Modal.tsx
+    Table.tsx
+    Badge.tsx
+    Loader.tsx
+    ProductCard.tsx
+    AuthForm.tsx
+    Pagination.tsx
+  /admin
+    AdminSidebar.tsx
+    AdminHeader.tsx
+    MetricsCard.tsx
+
+/context
+  AuthContext.tsx
+
+/lib
+  api.ts             → API handlers
+  auth.ts            → auth helpers
+  routeGuard.ts      → route protection logic
+
+/types
+  user.ts
+  product.ts
+  order.ts
+
+/styles
+  globals.css
+🧩 Component Strategy
+layout/
+Reusable page-level layouts:
+
+UserLayout: navbar, footer, cart.
+
+AdminLayout: sidebar, admin header.
+
+common/
+Reusable logic-heavy components (Forms, Inputs with validation, Buttons, Tables, Modals, Cards). Most business logic lives here.
+
+admin/
+Admin-specific UI components (Sidebar, Dashboard cards, Data tables).
+
+🛍️ Core Frontend Features
+Customer Features
+Product listing & search
+
+Product details
+
+Cart management
+
+Checkout flow
+
+Order confirmation
+
+Authentication (login/register)
+
+Admin Features
+Admin login
+
+Dashboard metrics
+
+Product management (CRUD)
+
+Order management
+
+User management
+
+Note: Admin UI is not visible in the store UI and is accessed only via /admin.
+
+🎨 UI/UX Principles
+Clean, professional, production-ready UI.
+
+Functionality-first design.
+
+Fully responsive & Accessible (WCAG-friendly).
+
+Keyboard navigation supported.
+
+Clear error and loading states.
+
+⚡ Performance Considerations
+Component-level reuse.
+
+Lazy loading where applicable.
+
+Optimized images.
+
+Minimal unnecessary re-renders.
+
+API-driven data fetching.
+
+🤝 Backend Collaboration
+This frontend is designed to integrate with a backend that provides:
+
+Authentication endpoints.
+
+Role-based user data.
+
+Product and Order APIs.
+
+The frontend assumes real API responses, making collaboration seamless.
+
+✅ Summary
+This project demonstrates role-based architecture, clean frontend structure, and real-world product thinking, ensuring strong collaboration readiness and alignment with Project Nexus requirements.
