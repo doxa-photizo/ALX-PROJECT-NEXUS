@@ -73,26 +73,31 @@ This prevents unauthorized access via direct URL entry.
 
 🗂️ File & Folder Structure (No src/ Folder)
 Plaintext
-/app
-  /page.tsx                → Home
-  /login/page.tsx          → User login
-  /register/page.tsx       → User registration
-  /products/page.tsx       → Product listing
-  /product/[id]/page.tsx   → Product details
-  /cart/page.tsx
-  /checkout/page.tsx
+/pages
+  index.tsx                  → Home
+
+  /login.tsx                 → User login
+  /register.tsx              → User registration
+
+  /products
+    index.tsx                → Product listing
+    [id].tsx                 → Product details
+
+  /cart.tsx
+  /checkout.tsx
 
   /admin
-    /login/page.tsx
-    /dashboard/page.tsx
-    /products/page.tsx
-    /orders/page.tsx
-    /users/page.tsx
+    login.tsx
+    dashboard.tsx
+    products.tsx
+    orders.tsx
+    users.tsx
 
 /components
   /layout
     UserLayout.tsx
     AdminLayout.tsx
+
   /common
     Button.tsx
     Input.tsx
@@ -103,6 +108,7 @@ Plaintext
     ProductCard.tsx
     AuthForm.tsx
     Pagination.tsx
+
   /admin
     AdminSidebar.tsx
     AdminHeader.tsx
@@ -112,17 +118,16 @@ Plaintext
   AuthContext.tsx
 
 /lib
-  api.ts             → API handlers
-  auth.ts            → auth helpers
-  routeGuard.ts      → route protection logic
+  api.ts            → Axios instance + API handlers
+  auth.ts           → auth helpers
+  routeGuard.ts     → route protection logic
 
 /types
   user.ts
   product.ts
   order.ts
 
-/styles
-  globals.css
+
 🧩 Component Strategy
 layout/
 Reusable page-level layouts:
