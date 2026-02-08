@@ -28,15 +28,20 @@ const AdminDashboard = () => {
     useEffect(() => {
         const loadDashboardData = async () => {
             try {
-                const [products, orders] = await Promise.all([
+                const [productsData, orders] = await Promise.all([
                     fetchProducts(),
-                    getUserOrders(1) // Demo purposes use user 1
+                    getUserOrders()
                 ]);
+
+                const products = productsData.results || [];
 
                 // Calculate revenue from orders (FakeStoreAPI orders are limited, so we'll add some logic)
                 // Since FakeStoreAPI carts don't have prices, we would usually fetch product details for each cart item.
                 // For a quick dashboard, let's just estimate or mock a reasonable number based on product count.
-                const estimatedRevenue = products.slice(0, 15).reduce((acc: number, p: Product) => acc + p.price * 2, 0);
+                const estimatedRevenue = products.slice(0, 15).reduce((acc: number, p: Product) => {
+                    const price = typeof p.price === 'number' ? p.price : parseFloat(p.price || '0');
+                    return acc + price * 2;
+                }, 0);
 
                 setStats({
                     totalProducts: products.length,

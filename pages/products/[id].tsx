@@ -11,7 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 
 interface ProductDetailsProps {
-    product: Product;
+    product: any; // Adapted product with both backend and legacy fields
 }
 
 const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ product }) => {
@@ -62,8 +62,8 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ product }) => {
                     <div className="bg-gray-50 rounded-2xl p-8 flex items-center justify-center h-[500px]">
                         <div className="relative w-full h-full">
                             <Image
-                                src={product.image}
-                                alt={product.title}
+                                src={product.image || product.product_image || "/placeholder.png"}
+                                alt={product.title || product.name}
                                 fill
                                 className="object-contain mix-blend-multiply"
                                 priority
@@ -77,7 +77,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ product }) => {
                             {product.category}
                         </span>
                         <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                            {product.title}
+                            {product.title || product.name}
                         </h1>
 
                         <div className="flex items-center mb-6">
@@ -85,13 +85,13 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ product }) => {
                                 {[...Array(5)].map((_, i) => (
                                     <Star
                                         key={i}
-                                        className={`h-5 w-5 ${i < Math.round(product.rating.rate) ? "fill-current" : "text-gray-300"
+                                        className={`h-5 w-5 ${i < Math.round(product.rating?.rate || 0) ? "fill-current" : "text-gray-300"
                                             }`}
                                     />
                                 ))}
                             </div>
                             <span className="text-gray-500 text-sm">
-                                ({product.rating.count} reviews)
+                                ({product.rating?.count || 0} reviews)
                             </span>
                         </div>
 
@@ -102,7 +102,9 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ product }) => {
                         <div className="flex items-end justify-between mb-8 border-b border-gray-100 pb-8">
                             <div>
                                 <span className="text-gray-500 text-sm block mb-1">Price</span>
-                                <span className="text-4xl font-bold text-gray-900">${product.price}</span>
+                                <span className="text-4xl font-bold text-gray-900">
+                                    ${typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price || '0').toFixed(2)}
+                                </span>
                             </div>
                         </div>
 

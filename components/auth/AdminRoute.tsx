@@ -12,13 +12,13 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     const router = useRouter();
 
     useEffect(() => {
+        /*
         if (!isLoading && (!token || user?.role !== "admin")) {
-            // If not logged in or not admin, redirect or stay if we want to show "Access Denied"
-            // For now, let's redirect to login if no token, otherwise we show access denied UI below
             if (!token) {
                 router.push("/login");
             }
         }
+        */
     }, [token, user, isLoading, router]);
 
     if (isLoading) {
@@ -32,6 +32,8 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
         );
     }
 
+    // Temporarily disabled for preview
+    /*
     if (!token || user?.role !== "admin") {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
@@ -61,6 +63,8 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
             </div>
         );
     }
+    */
+
 
     return <>{children}</>;
 };

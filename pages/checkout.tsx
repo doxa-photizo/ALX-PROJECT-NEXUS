@@ -241,13 +241,13 @@ const CheckoutPage = () => {
                                     {cartItems.map((item) => (
                                         <div key={item.id} className="flex gap-4">
                                             <div className="relative w-16 h-16 bg-white rounded-xl overflow-hidden border border-gray-100 flex-shrink-0">
-                                                <Image src={item.image} alt={item.title} fill className="object-contain p-2" />
+                                                <Image src={item.image} alt={item.title || item.name} fill className="object-contain p-2" />
                                                 <span className="absolute -top-2 -right-2 bg-gray-900 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
                                                     {item.quantity}
                                                 </span>
                                             </div>
                                             <div className="flex-grow min-w-0">
-                                                <p className="text-sm font-semibold text-gray-900 line-clamp-2">{item.title}</p>
+                                                <p className="text-sm font-semibold text-gray-900 line-clamp-2">{item.title || item.name}</p>
                                                 <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>

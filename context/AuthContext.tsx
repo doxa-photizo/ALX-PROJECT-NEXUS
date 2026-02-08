@@ -39,12 +39,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const login = async (credentials: LoginCredentials, role: "user" | "admin") => {
         try {
-            const { token } = await apiLogin(credentials);
-            localStorage.setItem("token", token);
+            const response = await apiLogin(credentials);
+            // Backend returns { access, refresh } tokens
+            const accessToken = response.access || response.token;
+
+            localStorage.setItem("token", accessToken);
             localStorage.setItem("role", role);
-            setToken(token);
-            const decoded = jwtDecode(token) as User;
-            setUser({ ...decoded, role });
+            setToken(accessToken);
+
+            try {
+                const decoded = jwtDecode(accessToken) as User;
+                setUser({ ...decoded, role });
+            } catch (decodeError) {
+                // If token can't be decoded, create a basic user object
+                setUser({
+                    id: 0,
+                    username: credentials.username,
+                    email: "",
+                    role
+                });
+            }
 
             if (role === "admin") {
                 router.push("/admin/dashboard");

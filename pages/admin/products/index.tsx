@@ -28,7 +28,7 @@ const AdminProducts = () => {
         const loadProducts = async () => {
             try {
                 const data = await fetchProducts();
-                setProducts(data);
+                setProducts(data.results || []);
             } catch (error) {
                 console.error("Failed to fetch products:", error);
             } finally {
@@ -39,8 +39,9 @@ const AdminProducts = () => {
     }, []);
 
     const filteredProducts = products.filter(p =>
-        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchQuery.toLowerCase())
+        (p.title || p.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (String(p.category) || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.category_name || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleDelete = async (id: number) => {
@@ -110,21 +111,21 @@ const AdminProducts = () => {
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-14 h-14 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 p-2 border border-gray-100 group-hover:scale-110 transition-transform">
-                                                    <img src={product.image} alt={product.title} className="w-full h-full object-contain mix-blend-multiply" />
+                                                    <img src={product.image || product.product_image || "/placeholder.png"} alt={product.title || product.name} className="w-full h-full object-contain mix-blend-multiply" />
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="font-bold text-gray-900 line-clamp-1 truncate hover:text-blue-600 transition-colors cursor-pointer" title={product.title}>{product.title}</p>
+                                                    <p className="font-bold text-gray-900 line-clamp-1 truncate hover:text-blue-600 transition-colors cursor-pointer" title={product.title || product.name}>{product.title || product.name}</p>
                                                     <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-0.5">ID: #{product.id.toString().padStart(4, '0')}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-8 py-5">
                                             <span className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-blue-100/50">
-                                                {product.category}
+                                                {product.category_name || product.category}
                                             </span>
                                         </td>
                                         <td className="px-8 py-5">
-                                            <span className="font-black text-gray-900 tracking-tight">${product.price.toFixed(2)}</span>
+                                            <span className="font-black text-gray-900 tracking-tight">${typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price || '0').toFixed(2)}</span>
                                         </td>
                                         <td className="px-8 py-5">
                                             <span className="text-gray-500 font-bold text-sm">84 in stock</span>

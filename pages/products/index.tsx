@@ -12,13 +12,52 @@ import { LayoutGrid, List, Filter, ChevronDown } from "lucide-react";
 
 interface Props {
     products: Product[];
+    count: number;
+    next: string | null;
+    previous: string | null;
 }
 
-const ProductsPage: React.FC<Props> = ({ products }) => {
+const ProductsPage: React.FC<Props> = ({ products: initialProducts, count: initialCount, next: initialNext, previous: initialPrevious }) => {
     const { user, logout } = useAuth();
     const { totalItems } = useCart();
     const router = useRouter();
     const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
+
+    // Pagination State
+    // We can use URL query params for pagination to support sharing/bookmarks, 
+    // but for now, we'll keep it simple with client-side state fetching if we want dynamic updates,
+    // OR just use router.push with query params and getServerSideProps/getStaticProps re-fetching.
+    // Given getStaticProps is used, we only get the *first* page at build time. 
+    // To support real pagination with getStaticProps, we'd need client-side fetching for subsequent pages.
+    // Let's implement client-side fetching for pages > 1.
+
+    const [products, setProducts] = React.useState<Product[]>(initialProducts);
+    const [count, setCount] = React.useState(initialCount);
+    const [next, setNext] = React.useState(initialNext);
+    const [previous, setPrevious] = React.useState(initialPrevious);
+    const [loading, setLoading] = React.useState(false);
+
+    const loadPage = async (pageUrl: string | null) => {
+        if (!pageUrl) return;
+        setLoading(true);
+        try {
+            // Extract page number from URL or use a more robust param handling
+            const url = new URL(pageUrl);
+            const page = url.searchParams.get("page");
+            const pageSize = url.searchParams.get("page_size") || "15";
+
+            const data = await fetchProducts({ page: page ? parseInt(page) : 1, page_size: parseInt(pageSize) });
+            setProducts(data.results);
+            setNext(data.next);
+            setPrevious(data.previous);
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+            console.error("Failed to load products:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleCartClick = () => {
         router.push("/cart");
@@ -64,7 +103,7 @@ const ProductsPage: React.FC<Props> = ({ products }) => {
                             </button>
                             <div className="h-6 w-px bg-gray-100 hidden sm:block" />
                             <p className="text-sm font-bold text-gray-400 hidden sm:block">
-                                Showing <span className="text-gray-900">{products.length}</span> Products
+                                Showing <span className="text-gray-900">{products.length}</span> of <span className="text-gray-900">{count}</span> Products
                             </p>
                         </div>
 
@@ -94,7 +133,11 @@ const ProductsPage: React.FC<Props> = ({ products }) => {
 
                 {/* Product Grid */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    {viewMode === "grid" ? (
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                        </div>
+                    ) : viewMode === "grid" ? (
                         <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {products?.map((product) => (
                                 <ProductCard key={product.id} product={product} />
@@ -105,7 +148,7 @@ const ProductsPage: React.FC<Props> = ({ products }) => {
                             {products?.map((product) => (
                                 <div key={product.id} className="group bg-white rounded-3xl border border-gray-100 p-6 flex gap-8 hover:shadow-xl hover:shadow-gray-100 transition-all">
                                     <div className="w-48 h-48 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 p-6">
-                                        <img src={product.image} alt={product.title} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
+                                        <img src={product.image || product.product_image || "/placeholder.png"} alt={product.title} className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
                                     </div>
                                     <div className="flex-grow flex flex-col justify-center py-4">
                                         <div className="flex items-start justify-between mb-2">
@@ -129,6 +172,27 @@ const ProductsPage: React.FC<Props> = ({ products }) => {
                             ))}
                         </div>
                     )}
+
+                    {/* Pagination Controls */}
+                    <div className="mt-12 flex justify-between items-center">
+                        <button
+                            onClick={() => loadPage(previous)}
+                            disabled={!previous || loading}
+                            className="px-6 py-3 bg-white border border-gray-200 rounded-xl font-bold text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                            Previous
+                        </button>
+                        <span className="text-sm font-bold text-gray-500">
+                            {products.length > 0 ? "Showing results" : "No results"}
+                        </span>
+                        <button
+                            onClick={() => loadPage(next)}
+                            disabled={!next || loading}
+                            className="px-6 py-3 bg-white border border-gray-200 rounded-xl font-bold text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </main>
 
@@ -140,10 +204,13 @@ const ProductsPage: React.FC<Props> = ({ products }) => {
 export default ProductsPage;
 
 export const getStaticProps: GetStaticProps = async () => {
-    const products = await fetchProducts();
+    const data = await fetchProducts({ page_size: 15 });
     return {
         props: {
-            products,
+            products: data.results,
+            count: data.count,
+            next: data.next,
+            previous: data.previous,
         },
         // Revalidate every hour
         revalidate: 3600,

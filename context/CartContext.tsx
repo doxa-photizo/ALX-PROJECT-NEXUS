@@ -3,7 +3,7 @@ import { Product, CartItem } from "@/interfaces";
 
 interface CartContextType {
     cartItems: CartItem[];
-    addToCart: (product: Product, quantity?: number) => void;
+    addToCart: (product: any, quantity?: number) => void;
     removeFromCart: (productId: number) => void;
     updateQuantity: (productId: number, quantity: number) => void;
     clearCart: () => void;
@@ -38,7 +38,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [cartItems, isInitialized]);
 
-    const addToCart = (product: Product, quantity = 1) => {
+    const addToCart = (product: any, quantity = 1) => {
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item.id === product.id);
             if (existingItem) {
@@ -48,7 +48,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         : item
                 );
             }
-            return [...prevItems, { ...product, quantity }];
+            // Convert product to CartItem
+            const cartItem: CartItem = {
+                id: product.id,
+                name: product.name || product.title,
+                title: product.title || product.name,
+                price: typeof product.price === 'number' ? product.price : parseFloat(product.price || '0'),
+                image: product.image || product.product_image || '',
+                quantity,
+                description: product.description || '',
+                category: product.category || product.category_name || '',
+            };
+            return [...prevItems, cartItem];
         });
     };
 

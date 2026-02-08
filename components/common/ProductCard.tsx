@@ -1,11 +1,10 @@
 import React from "react";
-import { Product } from "@/interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
 interface Props {
-  product: Product;
+  product: any; // Adapted product with both backend and legacy fields
   onAddToCart?: (id: number) => void;
 }
 
@@ -13,6 +12,12 @@ const ProductCard: React.FC<Props> = ({ product, onAddToCart }) => {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
     if (onAddToCart) {
       onAddToCart(product.id);
     } else {
@@ -25,8 +30,8 @@ const ProductCard: React.FC<Props> = ({ product, onAddToCart }) => {
     <div className="group rounded-lg border bg-white p-4 shadow-sm hover:shadow-md flex flex-col h-full">
       <Link href={`/products/${product.id}`} className="block relative h-48 w-full overflow-hidden rounded-md bg-gray-100 mb-4">
         <Image
-          src={product.image}
-          alt={product.title}
+          src={product.image || product.product_image || "/placeholder.png"}
+          alt={product.title || product.name}
           fill
           className="object-contain p-4 transition-transform group-hover:scale-105"
         />
@@ -34,12 +39,16 @@ const ProductCard: React.FC<Props> = ({ product, onAddToCart }) => {
 
       <div className="flex flex-col flex-grow space-y-2">
         <Link href={`/products/${product.id}`} className="hover:text-blue-600 transition-colors">
-          <h2 className="text-lg font-bold text-gray-900 line-clamp-1" title={product.title}>{product.title}</h2>
+          <h2 className="text-lg font-bold text-gray-900 line-clamp-1" title={product.title || product.name}>
+            {product.title || product.name}
+          </h2>
         </Link>
         <p className="line-clamp-2 text-sm text-gray-500 flex-grow">{product.description}</p>
 
         <div className="flex items-center justify-between pt-2">
-          <p className="text-xl font-semibold text-blue-600">${product.price.toFixed(2)}</p>
+          <p className="text-xl font-semibold text-blue-600">
+            ${typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price || '0').toFixed(2)}
+          </p>
           <p className="text-xs text-gray-400">
             {product.rating?.count ?? 0} reviews • {product.rating?.rate ?? 0}★
           </p>

@@ -69,7 +69,7 @@ const LoginPage = () => {
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-14 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                                         <Mail className="h-5 w-5" />
                                     </div>
                                     <input
@@ -78,7 +78,7 @@ const LoginPage = () => {
                                         required
                                         value={formData.username}
                                         onChange={handleChange}
-                                        className="w-full pl-6 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-gray-400 font-medium"
+                                        className="w-full pl-10 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-gray-400 font-medium"
                                         placeholder="johnd"
                                     />
                                     <div className="absolute bottom-0 left-0 h-0.5 bg-blue-500 transition-all duration-300 w-0 group-focus-within:w-full rounded-full" />
@@ -92,7 +92,7 @@ const LoginPage = () => {
                                     <Link href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Forgot password?</Link>
                                 </div>
                                 <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-14 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                                         <Lock className="h-5 w-5" />
                                     </div>
                                     <input
@@ -101,12 +101,12 @@ const LoginPage = () => {
                                         required
                                         value={formData.password}
                                         onChange={handleChange}
-                                        className="w-full pl-6 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-gray-400 font-medium"
+                                        className="w-full pl-10 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all placeholder-gray-400 font-medium"
                                         placeholder="••••••••"
                                     />
                                     <div className="absolute bottom-0 left-0 h-0.5 bg-blue-500 transition-all duration-300 w-0 group-focus-within:w-full rounded-full" />
                                 </div>
-                                <p className="mt-1.5 text-[10px] text-gray-400 uppercase tracking-wider font-bold">Hint: m38rmF$</p>
+                                <p className="mt-1.5 text-[10px] text-gray-400 uppercase tracking-wider font-bold">Hint: m38rmn=</p>
                             </div>
 
                             <div>

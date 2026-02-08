@@ -76,14 +76,14 @@ const CartPage = () => {
                                     <div className="relative w-24 h-24 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0">
                                         <Image
                                             src={item.image}
-                                            alt={item.title}
+                                            alt={item.title || item.name}
                                             fill
                                             className="object-contain p-2"
                                         />
                                     </div>
                                     <div className="flex-grow min-w-0">
                                         <Link href={`/products/${item.id}`} className="hover:text-blue-600 transition-colors">
-                                            <h3 className="font-bold text-gray-900 text-lg line-clamp-1">{item.title}</h3>
+                                            <h3 className="font-bold text-gray-900 text-lg line-clamp-1">{item.title || item.name}</h3>
                                         </Link>
                                         <p className="text-gray-500 text-sm mb-2 capitalize">{item.category}</p>
                                         <div className="flex items-center justify-between mt-auto">
