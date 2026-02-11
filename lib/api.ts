@@ -108,7 +108,18 @@ export const login = async (credentials: { username: string; password: string })
   return data; // Returns { access, refresh }
 };
 
-export const register = async (userData: { username: string; email: string; password: string; password2: string }) => {
+export interface RegistrationData {
+  username: string;
+  email: string;
+  password: string;
+  user_type: "customer" | "seller";
+  phone_number?: string;
+  store_name?: string;
+  tax_number?: string;
+  seller_phone?: string;
+}
+
+export const register = async (userData: RegistrationData) => {
   const { data } = await api.post("/accounts/register/", userData);
   return data;
 };
